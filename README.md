@@ -14,7 +14,7 @@
 
 ## 构建与运行
 
-1. 安装 Android Studio，确保 SDK 35 和 JDK 11 可用。
+1. 安装 Android Studio，确保 SDK 33 和 JDK 11 可用。
 2. 用 Android Studio 打开本目录，等待 Gradle 同步完成。
 3. 连接 Android 8.0 或更高版本的手机，运行 `app`。
 4. 首次进入后点击首页的“去开启”，在系统设置中授权“妙记自动记账”的通知访问权限。
