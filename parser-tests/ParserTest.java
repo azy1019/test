@@ -34,6 +34,11 @@ public final class ParserTest {
                 "com.example.bank", "交易提醒", "消费 30.00 元，账户余额 5000.00 元", 1723300240000L);
         check(balance != null && balance.amountCents == 3000, "应识别消费金额而不是余额");
 
+        LedgerEntry accessibilityPage = NotificationTransactionParser.parse(
+                "com.tencent.mm", "微信支付", "支付成功 ¥88.00 支付方式 零钱 收款方：兰州拉面", 1723300300000L);
+        check(accessibilityPage != null && accessibilityPage.amountCents == 8800, "无障碍付款结果页金额应被识别");
+        check("兰州拉面".equals(accessibilityPage.merchant), "无障碍付款结果页商户应被识别");
+
         System.out.println("Parser tests passed: " + passed);
     }
 

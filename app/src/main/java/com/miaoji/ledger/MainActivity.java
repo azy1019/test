@@ -40,8 +40,8 @@ import java.util.UUID;
 public final class MainActivity extends Activity {
     private static final int EXPORT_CSV = 71;
     private static final String[] CATEGORIES = {"餐饮", "交通", "购物", "居住", "娱乐", "医疗", "学习", "其他", "收入"};
-    private static final int BRAND = Color.rgb(90, 222, 198);
-    private static final int SUB = Color.rgb(220, 252, 246);
+    private static final int BRAND = Color.rgb(174, 202, 247);
+    private static final int SUB = Color.rgb(239, 244, 255);
     private static final int INK = Color.rgb(0, 13, 8);
     private static final int MUTED = Color.rgb(179, 179, 179);
     private static final int PAGE = Color.rgb(244, 244, 244);
@@ -143,7 +143,7 @@ public final class MainActivity extends Activity {
         LinearLayout header = row();
         header.setGravity(Gravity.CENTER_VERTICAL);
         header.addView(new Space(this), new LinearLayout.LayoutParams(dp(40), dp(40)));
-        TextView bookTitle = text("日常账本  ▾", 17, INK, true);
+        TextView bookTitle = text("默认账本  ⇄", 17, INK, true);
         bookTitle.setGravity(Gravity.CENTER);
         header.addView(bookTitle, new LinearLayout.LayoutParams(0, dp(44), 1));
         TextView search = text("⌕", 25, INK, true);
@@ -157,7 +157,7 @@ public final class MainActivity extends Activity {
         LinearLayout summary = column();
         summary.setPadding(dp(22), dp(20), dp(22), dp(20));
         GradientDrawable summaryBackground = new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM,
-                new int[]{Color.rgb(90, 222, 198), Color.rgb(112, 229, 208)});
+                new int[]{Color.rgb(174, 202, 247), Color.rgb(199, 218, 250)});
         summaryBackground.setCornerRadius(dp(18));
         summary.setBackground(summaryBackground);
         summary.addView(text("本月支出", 14, INK, true));
@@ -197,7 +197,7 @@ public final class MainActivity extends Activity {
     }
 
     private View buildAutoBanner() {
-        boolean access = hasNotificationAccess();
+        boolean access = hasAccessibilityAccess();
         LinearLayout banner = row();
         banner.setGravity(Gravity.CENTER_VERTICAL);
         banner.setPadding(dp(15), dp(13), dp(15), dp(13));
@@ -209,11 +209,11 @@ public final class MainActivity extends Activity {
         LinearLayout copy = column();
         copy.setPadding(dp(12), 0, dp(6), 0);
         copy.addView(text("自动记账", 13, INK, true));
-        copy.addView(text(access ? "● 运行中 · 仅在本机处理" : "未开启 · 点击右侧授权", 11, access ? GREEN : MUTED, true));
+        copy.addView(text(access ? "● 运行中 · 付款后自动弹出" : "未开启 · 点击右侧授权", 11, access ? GREEN : MUTED, true));
         banner.addView(copy, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
         if (!access) {
             TextView go = text("去开启", 13, BRAND, true);
-            go.setOnClickListener(v -> openNotificationSettings());
+            go.setOnClickListener(v -> openAccessibilitySettings());
             banner.addView(go);
         }
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -300,7 +300,7 @@ public final class MainActivity extends Activity {
         LinearLayout tip = card();
         tip.setPadding(dp(18), dp(16), dp(18), dp(16));
         tip.addView(text("记账小贴士", 15, BRAND, true));
-        tip.addView(text("长按任意账单可以删除错误记录；自动分类不准确时，可先删除再手动补记。", 13, MUTED, false));
+        tip.addView(text("付款完成后会自动识别金额并弹窗；选择用途后才会写入账本。长按账单可以删除错误记录。", 13, MUTED, false));
         page.addView(tip);
         return scroll;
     }
@@ -320,7 +320,7 @@ public final class MainActivity extends Activity {
         switchRow.setGravity(Gravity.CENTER_VERTICAL);
         LinearLayout switchCopy = column();
         switchCopy.addView(text("自动记账", 17, INK, true));
-        switchCopy.addView(text("从支付与银行通知识别交易", 13, MUTED, false));
+        switchCopy.addView(text("从微信、支付宝付款结果页识别金额", 13, MUTED, false));
         switchRow.addView(switchCopy, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
         Switch toggle = new Switch(this);
         toggle.setChecked(getSharedPreferences("miaoji_settings", MODE_PRIVATE).getBoolean("auto_enabled", true));
@@ -335,16 +335,16 @@ public final class MainActivity extends Activity {
         dividerLp.setMargins(0, dp(16), 0, dp(14));
         autoCard.addView(divider, dividerLp);
 
-        TextView permission = text(hasNotificationAccess() ? "通知访问权限 · 已授权" : "通知访问权限 · 未授权", 14,
-                hasNotificationAccess() ? GREEN : 0xFFF59E0B, true);
+        TextView permission = text(hasAccessibilityAccess() ? "无障碍服务 · 已开启" : "无障碍服务 · 未开启", 14,
+                hasAccessibilityAccess() ? GREEN : 0xFFF59E0B, true);
         permission.setPadding(0, dp(7), 0, dp(7));
-        permission.setOnClickListener(v -> openNotificationSettings());
+        permission.setOnClickListener(v -> openAccessibilitySettings());
         autoCard.addView(permission);
 
         LinearLayout privacy = card();
         privacy.setPadding(dp(18), dp(18), dp(18), dp(18));
         privacy.addView(text("隐私保护", 17, INK, true));
-        TextView privacyCopy = text("所有通知解析均在你的手机上完成。妙记不联网、不读取历史通知，也不会保存无关通知的正文。账本数据库不参与云备份。", 13, MUTED, false);
+        TextView privacyCopy = text("金额识别只在你的手机上完成。无障碍服务仅查看微信和支付宝当前付款页面，不会自动点击或输入，也不会上传页面内容。账本数据库不参与云备份。", 13, MUTED, false);
         privacyCopy.setLineSpacing(0, 1.25f);
         privacyCopy.setPadding(0, dp(8), 0, 0);
         privacy.addView(privacyCopy);
@@ -356,7 +356,7 @@ public final class MainActivity extends Activity {
         export.setOnClickListener(v -> startCsvExport());
         page.addView(export);
 
-        TextView version = text("妙记 1.0.0 · 数据只属于你", 12, MUTED, false);
+        TextView version = text("妙记 1.1.0 · 数据只属于你", 12, MUTED, false);
         version.setGravity(Gravity.CENTER);
         version.setPadding(0, dp(24), 0, dp(8));
         page.addView(version);
@@ -510,15 +510,22 @@ public final class MainActivity extends Activity {
         }
     }
 
-    private boolean hasNotificationAccess() {
-        String enabled = Settings.Secure.getString(getContentResolver(), "enabled_notification_listeners");
-        if (enabled == null) return false;
+    private boolean hasAccessibilityAccess() {
+        int accessibilityEnabled = Settings.Secure.getInt(
+                getContentResolver(), Settings.Secure.ACCESSIBILITY_ENABLED, 0);
+        if (accessibilityEnabled != 1) return false;
+        String enabled = Settings.Secure.getString(
+                getContentResolver(), Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES);
+        if (enabled == null || enabled.isEmpty()) return false;
         String own = new ComponentName(this, AutoBookkeepingService.class).flattenToString();
-        return enabled.contains(own) || enabled.contains(getPackageName());
+        for (String service : enabled.split(":")) {
+            if (own.equalsIgnoreCase(service)) return true;
+        }
+        return false;
     }
 
-    private void openNotificationSettings() {
-        startActivity(new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"));
+    private void openAccessibilitySettings() {
+        startActivity(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS));
     }
 
     private LinearLayout summaryMetric(String label, String value) {

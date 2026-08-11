@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">妙记</string>
+    <string name="accessibility_description">仅在微信和支付宝付款页面识别交易金额，并弹出用途确认窗口；不会自动点击或输入。</string>
 </resources>
