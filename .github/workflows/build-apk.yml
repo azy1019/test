@@ -28,9 +28,6 @@ jobs:
         with:
           gradle-version: '7.5.1'
 
-      - name: Ensure Android SDK 35 is available
-        run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
-
       - name: Run parser tests
         run: |
           mkdir -p build/parser-tests
