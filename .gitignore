@@ -1,0 +1,10 @@
+.gradle/
+.idea/
+local.properties
+**/build/
+*.iml
+*.apk
+.tools/
+.reference-ui-analysis/
+.parser-test-*/
+.resource-check-*/
